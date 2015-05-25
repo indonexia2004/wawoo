@@ -38,7 +38,7 @@
 
             <EditText android:id="@+id/password" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
+                android:imeActionId="@+id/action_sign_in_short"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified" android:inputType="textPassword"
                 android:maxLines="1" android:singleLine="true" />
@@ -80,12 +80,13 @@
             android:singleLine="true"
             android:textStyle="bold"/>
 
-        <Button android:id="@+id/action_login_facebook" style="?android:textAppearanceSmall"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="@string/action_login_facebook"
-            android:textStyle="bold" android:background="@android:color/holo_blue_dark"
-            android:gravity="center"
-            android:layout_weight="1"/>
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
 
     </LinearLayout>
 

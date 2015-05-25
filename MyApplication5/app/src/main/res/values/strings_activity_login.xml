@@ -1,6 +1,8 @@
 <resources>
     <string name="title_activity_login">Sign in</string>
     <string name="app_name">WOWOO</string>
+    <string name="facebook_app_id">1109195535761016</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email ID</string>
     <string name="prompt_name">Name</string>

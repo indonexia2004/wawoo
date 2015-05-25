@@ -17,7 +17,7 @@ public class MainActivity extends SherlockActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent i = new Intent(this,LiveChannelGridViewActivity.class);
+        Intent i = new Intent(this,VodTabViewActivity.class);
         startActivity(i);
         /*
         if(networkAvailable()){

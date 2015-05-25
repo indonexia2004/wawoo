@@ -47,6 +47,7 @@ public class MainActivity22Activity extends SherlockFragmentActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                //.replace(R.id.container, VodTabViewActivity.class)
                 .commit();
     }
 

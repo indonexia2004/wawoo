@@ -78,7 +78,7 @@ public class RegisterActivity extends SherlockActivity implements LoaderCallback
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.action_sign_up || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }

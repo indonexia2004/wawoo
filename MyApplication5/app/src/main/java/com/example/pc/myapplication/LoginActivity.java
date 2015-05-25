@@ -27,6 +27,13 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +61,16 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setupActionBar();
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+
         setContentView(R.layout.activity_login);
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -72,7 +84,7 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.action_sign_in_short || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }
@@ -106,11 +118,26 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
             }
         });
 
-        Button mFacebookButton = (Button) findViewById(R.id.action_login_facebook);
-        mFacebookButton.setOnClickListener(new OnClickListener() {
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+       // loginButton.setReadPermissions("user_friends");
+        // Other app specific specialization
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "Facebook Login Not Support Yet", Toast.LENGTH_LONG).show();
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
             }
         });
 
@@ -118,6 +145,13 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
     /*
     private void setupActionBar() {
         ActionBar ab = getSupportActionBar();
@@ -350,5 +384,22 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
             showProgress(false);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
+    }
+
 }
 

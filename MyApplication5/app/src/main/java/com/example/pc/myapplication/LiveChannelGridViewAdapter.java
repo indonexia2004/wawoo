@@ -1,6 +1,7 @@
 package com.example.pc.myapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -40,7 +41,7 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
 
         int view_width = screen_width/5;   //width for imageview
         int view_high = screen_high/3;   //width for imageview
-        Log.d("DAI_DEBUG","view_width = " + view_width);
+        Log.d("DAI_DEBUG", "view_width = " + view_width);
 
 
         if (convertView == null) {
@@ -59,8 +60,8 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
         }
 
         textView.setText(mThumbName[position]);
-        textView.setBackgroundResource(mThumbIds[position]);
-        //imageView.setBackgroundColor(Color.rgb(100, 100, 50));
+        //textView.setBackgroundResource(mThumbIds[position]);
+        textView.setBackgroundColor(Color.rgb(100, 100, 50));
         return textView;
     }
 
