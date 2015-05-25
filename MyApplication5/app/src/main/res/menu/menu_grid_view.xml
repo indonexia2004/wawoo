@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.pc.myapplication.GridViewActivity">
+    <item android:id="@+id/action_vod" android:title="@string/action_vod"
+        android:orderInCategory="100" />
+    <item android:id="@+id/action_live_tv" android:title="@string/action_live_tv"
+        android:orderInCategory="100"  />
+
+</menu>

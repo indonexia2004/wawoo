@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.MyTheme" parent="Theme.Sherlock.Light">
+        <item name="actionBarStyle">@style/Widget.MyTheme.ActionBar</item>
+    </style>
+
+    <style name="Widget.MyTheme.ActionBar" parent="Widget.Sherlock.ActionBar">
+        <item name="background">#E4F4F500</item>
+    </style>
+
+</resources>
