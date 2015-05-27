@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.HttpClientStack;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.Volley;
 
 import java.io.InputStream;
@@ -38,8 +38,8 @@ public class AppController extends Application {
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext(),
-                    new HttpClientStack(new MyHttpClient(getApplicationContext())));
-           /* new HurlStack(null, newSslSocketFactory()));*/
+                    /*new HttpClientStack(new MyHttpClient(getApplicationContext())));*/
+            new HurlStack(null, newSslSocketFactory()));
         }
 
         return mRequestQueue;

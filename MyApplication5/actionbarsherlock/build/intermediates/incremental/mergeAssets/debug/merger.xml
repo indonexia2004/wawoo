@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="D:\Webbo\wawoo\MyApplication5\actionbarsherlock\src\main\assets"/></dataSet><dataSet config="debug"><source path="D:\Webbo\wawoo\MyApplication5\actionbarsherlock\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="D:\wawoo\MyApplication5\actionbarsherlock\src\main\assets"/></dataSet><dataSet config="debug"><source path="D:\wawoo\MyApplication5\actionbarsherlock\src\debug\assets"/></dataSet></merger>
