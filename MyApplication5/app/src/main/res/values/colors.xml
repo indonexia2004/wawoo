@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="transparency">#000000</color>
+    <!-- for activity -->
+    <color name="activity_background">#FFFFFF</color>
+    <color name="blue_activity_background">#375e8a</color>
+    <color name="border">#A12AE6</color>
+
+    <!-- for text -->
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_black">#000000</color>
+    <color name="text_blue">#375e8a</color>
+
+</resources>

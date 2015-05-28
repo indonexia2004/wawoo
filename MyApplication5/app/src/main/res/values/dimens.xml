@@ -11,4 +11,13 @@
 
     <dimen name="result_font">24sp</dimen>
     <dimen name="result_font_small">16sp</dimen>
+
+
+    <dimen name="padding">10dp</dimen>
+    <dimen name="padding_30">30dp</dimen>
+    <dimen name="text_size">18dp</dimen>
+    <dimen name="text_size_big">38dp</dimen>
+    <dimen name="list_radius">6dp</dimen>
+    <dimen name="list_border">1dp</dimen>
+
 </resources>

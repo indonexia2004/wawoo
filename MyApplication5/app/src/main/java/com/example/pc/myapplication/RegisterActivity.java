@@ -14,6 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,9 +29,20 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -44,6 +57,7 @@ public class RegisterActivity extends SherlockActivity implements LoaderCallback
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+    final private static String TAG = RegisterActivity.class.getName();
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -169,9 +183,86 @@ public class RegisterActivity extends SherlockActivity implements LoaderCallback
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            template();
         }
+    }
+
+    private String urlBase = "https://41.204.245.244:80/tbcplatform/api/v1/";
+    private String template = urlBase + "clients/template";
+    /**
+     * Method to make json object request where json response starts wtih {
+     * */
+    private void template() {
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                template, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+
+                try {
+                    // Parsing json object response
+                    // response will be a json object
+                    JSONObject addressTemplateData = response.getJSONObject("addressTemplateData");
+                    JSONArray countryData = addressTemplateData.getJSONArray("countryData");
+                    JSONArray stateData = addressTemplateData.getJSONArray("stateData");
+                    JSONArray cityData = addressTemplateData.getJSONArray("cityData");
+
+                    String country = countryData.getString(1);
+                    String state = stateData.getString(1);
+                    String city = cityData.getString(1);
+
+                    String jsonResponse = "";
+                    jsonResponse += "country: " + country + "\n\n";
+                    jsonResponse += "state: " + state + "\n\n";
+                    jsonResponse += "city: " + city + "\n\n";
+
+                    Log.d(TAG, jsonResponse);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),
+                            "Error: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+            }
+        }){
+
+            /*@Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", "billing");
+                params.put("password", "password");
+                return params;
+            }*/
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("X-Tbc-Platform-TenantId", "Default");
+                headers.put("Content-Type", "application/json;charset=utf-8");
+                String creds = String.format("%s:%s","billing","password");
+                String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
+                headers.put("Authorization", auth);
+                return headers;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
     private boolean isEmailValid(String email) {

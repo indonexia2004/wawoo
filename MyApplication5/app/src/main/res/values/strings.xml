@@ -25,4 +25,8 @@
     <color name="titletextcolor">#FFFF00</color>
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
 
+    <!-- azola -->
+    <string name="cancel_button">Cancel</string>
+    <string name="delete_button">Delete</string>
+
 </resources>

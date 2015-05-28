@@ -83,9 +83,13 @@ public class AppController extends Application {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
             tmf.init(trusted);
 
-            SSLContext context = SSLContext.getInstance("TLS");
+            SSLContext context = SSLContext.getInstance("TLSv1");
             context.init(null, tmf.getTrustManagers(), null);
-            SSLSocketFactory ret = context.getSocketFactory();
+            SSLSocketFactory ret = new NoSSLv3SocketFactory(context.getSocketFactory());
+
+            //SSLContext context = SSLContext.getInstance("TLS");
+            //context.init(null, tmf.getTrustManagers(), null);
+            //SSLSocketFactory ret = context.getSocketFactory();
             return ret;
         } catch (Exception e) {
             throw new AssertionError(e);
