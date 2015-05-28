@@ -6,38 +6,29 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 
-public class MainActivity extends SherlockFragmentActivity {
+public class VideoStreamActivity extends SherlockFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Intent i = new Intent(this,LiveChannelGridViewActivity.class);
-        startActivity(i);
-        //PlanDialog m = new PlanDialog();
-        //m.show(getSupportFragmentManager(), "hey");
+        setContentView(R.layout.video_stream);
+        String vidAddress = "http://www.pocketjourney.com/downloads/pj/video/famous.3gp";
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.parse(vidAddress), "video/*");
+        startActivity(intent);
 
-        /*
-        if(networkAvailable()){
-            Intent i = new Intent(this,GridViewActivity.class);
-            startActivity(i);
-        }else {
-            //alertTurnOnNetwork();
-            Intent i = new Intent(this,GridViewActivity.class);
-            startActivity(i);
-            Toast.makeText(this, "Please turn on network", Toast.LENGTH_LONG).show();
-        }*/
     }
 
     private void alertTurnOnNetwork() {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                MainActivity.this);
+                VideoStreamActivity.this);
 
         alertDialogBuilder.setTitle("Network Conection");
         alertDialogBuilder.setInverseBackgroundForced(true);
@@ -47,16 +38,16 @@ public class MainActivity extends SherlockFragmentActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (networkAvailable()) {
-                            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                            Intent i = new Intent(VideoStreamActivity.this, LoginActivity.class);
                             startActivity(i);
                         }else {
-                            MainActivity.this.finish();
+                            VideoStreamActivity.this.finish();
                         }
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        MainActivity.this.finish();
+                        VideoStreamActivity.this.finish();
                     }
                 });
 

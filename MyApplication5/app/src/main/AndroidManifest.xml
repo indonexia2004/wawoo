@@ -101,6 +101,10 @@
             android:theme="@style/Theme.Sherlock.Light.NoActionBar"
             android:label="@string/title_activity_plan" >
         </activity>
+        <activity
+            android:name=".VideoStreamActivity"
+            android:label="@string/title_activity_plan" >
+        </activity>
     </application>
 
 </manifest>

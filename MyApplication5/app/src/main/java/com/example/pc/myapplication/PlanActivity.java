@@ -25,29 +25,14 @@ public class PlanActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
-
-        //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        //getSupportActionBar().setCustomView(R.layout.actionbar_title);
-
-        //Intent i = new Intent(this,PlanActivity.class);
-        //startActivity(i);
         plansPrepaid(null);
 
-
-        /*
-        if(networkAvailable()){
-            Intent i = new Intent(this,GridViewActivity.class);
-            startActivity(i);
-        }else {
-            //alertTurnOnNetwork();
-            Intent i = new Intent(this,GridViewActivity.class);
-            startActivity(i);
-            Toast.makeText(this, "Please turn on network", Toast.LENGTH_LONG).show();
-        }*/
     }
 
-    private String plans_prepaid = "http://192.168.56.101:3000/db";
-    //private String plans_prepaid = urlBase + "plans?planType=prepaid";
+    //private String plans_prepaid = "http://192.168.56.101:3000/db";
+    private String urlBase = "https://41.204.245.244:80/tbcplatform/api/v1/";
+    private String plans_prepaid = urlBase + "plans?planType=prepaid";
+
 
     private void plansPrepaid(JSONObject object) {
 
@@ -76,9 +61,6 @@ public class PlanActivity extends SherlockFragmentActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(PlanDialog.class.getName(), "Error: " + error.getMessage());
-                //Toast.makeText(getApplicationContext(),
-                //error.getMessage(), Toast.LENGTH_SHORT).show();
-                // hide the progress dialog
             }
         }){
 
