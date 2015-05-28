@@ -28,5 +28,6 @@
     <!-- azola -->
     <string name="cancel_button">Cancel</string>
     <string name="delete_button">Delete</string>
+    <string name="title_activity_plan">PlanActivity</string>
 
 </resources>

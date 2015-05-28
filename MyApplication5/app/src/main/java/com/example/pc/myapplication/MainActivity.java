@@ -8,17 +8,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 
-public class MainActivity extends SherlockActivity {
+public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent i = new Intent(this,VolleyActivity.class);
+        Intent i = new Intent(this,PlanActivity.class);
         startActivity(i);
+        //PlanDialog m = new PlanDialog();
+        //m.show(getSupportFragmentManager(), "hey");
+
         /*
         if(networkAvailable()){
             Intent i = new Intent(this,GridViewActivity.class);
