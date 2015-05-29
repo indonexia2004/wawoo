@@ -1,22 +1,33 @@
 package com.example.pc.myapplication;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageContainer;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+
+import java.util.ArrayList;
 
 public class LiveChannelGridViewAdapter extends BaseAdapter {
     private Context mContext;
+    private ArrayList imageUrlLIst;
 
     // Constructor
-    public LiveChannelGridViewAdapter(Context c) {
+    public LiveChannelGridViewAdapter(Context c, ArrayList urlList) {
         mContext = c;
+        imageUrlLIst = urlList;
+    }
+
+    public void setimageUrlList(ArrayList urlList) {
+        imageUrlLIst = urlList;
     }
 
     public int getCount() {
@@ -31,9 +42,11 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
         return 0;
     }
 
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView textView;
+        final ImageView imageView;
 
         DisplayMetrics displayMetrics= mContext.getResources().getDisplayMetrics();
         int screen_width= displayMetrics.widthPixels;    //width of the device screen
@@ -45,10 +58,10 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
 
 
         if (convertView == null) {
-            textView = new TextView(mContext);
-            textView.setLayoutParams(new GridView.LayoutParams(view_width, view_high));
+            imageView = new ImageView(mContext);
+            imageView.setLayoutParams(new GridView.LayoutParams(view_width, view_high));
 
-            textView.setGravity(Gravity.CENTER);
+            //imageView.setGravity(Gravity.CENTER);
            // textView.setSingleLine();
            // textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
               //      mContext.getResources().getDimension(R.dimen.result_font_small));
@@ -56,13 +69,37 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
             //textView.setPadding(0, 20, 20, 0);
             //imageView.setBackgroundColor(Color.RED);
         } else {
-            textView = (TextView) convertView;
+            imageView = (ImageView) convertView;
         }
 
-        textView.setText(mThumbName[position]);
+        //imageView.setText(mThumbName[position]);
         //textView.setBackgroundResource(mThumbIds[position]);
-        textView.setBackgroundColor(Color.rgb(100, 100, 50));
-        return textView;
+        //imageView.setBackgroundColor(Color.rgb(100, 100, 50));
+
+
+        // If you are using normal ImageView
+        if(imageUrlLIst.size() == 0){
+            //imageView.setBackgroundResource(R.drawable.icon_error);
+        } else {
+            imageLoader.get((String)imageUrlLIst.get(position), new ImageListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LiveChannelGridViewAdapter", "Image Load Error: " + error.getMessage());
+                }
+
+                @Override
+                public void onResponse(ImageContainer response, boolean arg1) {
+                    if (response.getBitmap() != null) {
+                        // load image into imageview
+                        imageView.setImageBitmap(response.getBitmap());
+                    }
+                }
+            });
+        }
+
+
+        return imageView;
     }
 
     public static int FOLDER_NUMBER = 9;

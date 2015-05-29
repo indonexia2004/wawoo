@@ -7,6 +7,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 import java.io.InputStream;
@@ -22,6 +23,7 @@ public class AppController extends Application {
     private static char[] KEYSTORE_PASSWORD = "test123".toCharArray();
 
     private RequestQueue mRequestQueue;
+    private ImageLoader mImageLoader;
 
     private static AppController mInstance;
 
@@ -59,6 +61,15 @@ public class AppController extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
+    }
+
+    public ImageLoader getImageLoader() {
+        getRequestQueue();
+        if (mImageLoader == null) {
+            mImageLoader = new ImageLoader(this.mRequestQueue,
+                    new LruBitmapCache());
+        }
+        return this.mImageLoader;
     }
 
     private SSLSocketFactory newSslSocketFactory() {

@@ -26,15 +26,18 @@ import java.util.Map;
 public class LiveChannelGridViewActivity extends SherlockActivity {
 
     private JSONArray channelData;
+    LiveChannelGridViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_channel_grid_view);
+        JSONArray channelData = new JSONArray();
         channel(null);
 
+        adapter = new LiveChannelGridViewAdapter(this, getImageUrlList(channelData));
         GridView gridview = (GridView)findViewById(R.id.gridview);
-        gridview.setAdapter(new LiveChannelGridViewAdapter(this));
+        gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -46,9 +49,9 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
         });
     }
 
-    //private String channel = "http://192.168.56.101:3000/db";
-    private String urlBase = "https://41.204.245.244:80/tbcplatform/api/v1/";
-    private String plans_prepaid = urlBase + "planservices/334?serviceType=IPTV";
+    private String plans_prepaid = "http://192.168.56.101:3000/db";
+    //private String urlBase = "https://41.204.245.244:80/tbcplatform/api/v1/";
+    //private String plans_prepaid = urlBase + "planservices/334?serviceType=IPTV";
 
     private void channel(JSONObject object) {
 
@@ -61,9 +64,11 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
                         try
                         {
                             channelData = response;
+                            getImageUrlList(channelData);
                             //PlanDialog m = new PlanDialog(getPlanList(response));
-                            //m.show(getSupportFragmentManager(), "heyhey");
-
+                            //m.show(getSupportFragmentManager(), "heyhey");                            adapter.setimageUrlList(getImageUrlList(channelData));
+                            adapter.setimageUrlList(getImageUrlList(channelData));
+                            adapter.notifyDataSetChanged();
                             JSONObject resourceId = response.getJSONObject(1);
 
                         } catch(JSONException e) {
@@ -98,16 +103,16 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
-    private ArrayList imageUrlList(){
+    private ArrayList getImageUrlList(JSONArray channelList){
         ArrayList ret = new ArrayList();
-        for(int i=0 ; i< channelData.length(); i++) {
+        for(int i=0 ; i< channelList.length(); i++) {
             try{
-                ret.add(channelData.getJSONObject(i).getString("image"));
+                String url = channelList.getJSONObject(i).getString("image");
+                ret.add(url);
             } catch(JSONException e) {
                 e.printStackTrace();
             }
         }
-
         Log.d(PlanDialog.class.getName(), ret.toString());
         return ret;
     }

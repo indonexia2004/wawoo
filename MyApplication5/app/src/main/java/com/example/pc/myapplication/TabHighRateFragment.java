@@ -19,7 +19,7 @@ public class TabHighRateFragment extends SherlockFragment {
         View view = inflater.inflate(R.layout.tabview_fragment, container, false);
 
         GridView gridview = (GridView)view.findViewById(R.id.gridview);
-        gridview.setAdapter(new LiveChannelGridViewAdapter(getActivity().getApplicationContext()));
+        gridview.setAdapter(new LiveChannelGridViewAdapter(getActivity().getApplicationContext(),null));
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
