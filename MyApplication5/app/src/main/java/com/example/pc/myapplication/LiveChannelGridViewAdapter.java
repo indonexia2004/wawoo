@@ -1,20 +1,19 @@
 package com.example.pc.myapplication;
 
 import android.content.Context;
-import android.util.DisplayMetrics;
-import android.util.Log;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
-import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
+
+;
 
 public class LiveChannelGridViewAdapter extends BaseAdapter {
     private Context mContext;
@@ -31,7 +30,7 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return FOLDER_NUMBER;
+        return imageUrlLIst.size();
     }
 
     public Object getItem(int position) {
@@ -43,7 +42,7 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
     }
 
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
+    /*
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         final ImageView imageView;
@@ -73,8 +72,8 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
         }
 
         //imageView.setText(mThumbName[position]);
-        //textView.setBackgroundResource(mThumbIds[position]);
-        //imageView.setBackgroundColor(Color.rgb(100, 100, 50));
+        //imageView.setBackgroundResource(mThumbIds[position]);
+        imageView.setBackgroundColor(Color.rgb(100, 100, 50));
 
 
         // If you are using normal ImageView
@@ -100,6 +99,43 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
 
 
         return imageView;
+    }*/
+    // create a new ImageView for each item referenced by the Adapter
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ImageView imageView = (ImageView) convertView;
+
+
+        if (imageView == null) {
+            imageView = new ImageView(mContext);
+        }
+
+        String url = (String)imageUrlLIst.get(position);
+
+        Picasso.with(mContext)
+                .load(url)
+                .resize(250, 250)
+                .transform(new CropSquareTransformation())
+                //.placeholder(R.drawable.icon_loading)   // optional
+                //.error(R.drawable.icon_error)
+                .centerCrop()
+                .into(imageView);
+
+        return imageView;
+    }
+
+    public class CropSquareTransformation implements Transformation {
+        @Override public Bitmap transform(Bitmap source) {
+            int size = Math.min(source.getWidth(), source.getHeight());
+            int x = (source.getWidth() - size) / 2;
+            int y = (source.getHeight() - size) / 2;
+            Bitmap result = Bitmap.createBitmap(source, x, y, size, size);
+            if (result != source) {
+                source.recycle();
+            }
+            return result;
+        }
+
+        @Override public String key() { return "square()"; }
     }
 
     public static int FOLDER_NUMBER = 9;

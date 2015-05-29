@@ -98,7 +98,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".PlanActivity"
-            android:theme="@style/Theme.Sherlock.Light.NoActionBar"
             android:label="@string/title_activity_plan" >
         </activity>
         <activity

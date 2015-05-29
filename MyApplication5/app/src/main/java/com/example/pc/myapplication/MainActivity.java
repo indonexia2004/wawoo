@@ -17,7 +17,12 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent i = new Intent(this,LiveChannelGridViewActivity.class);
+
+        getSharedPreferences("WAWOO",Context.MODE_PRIVATE).edit()
+                                            .putString("CLIENT_ID", "334")
+                                            .commit();
+
+        Intent i = new Intent(this,PlanActivity.class);
         startActivity(i);
         //PlanDialog m = new PlanDialog();
         //m.show(getSupportFragmentManager(), "hey");

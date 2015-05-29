@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 
@@ -32,7 +34,7 @@ public class PlanDialog extends SherlockDialogFragment {
         builder.setTitle("hahaha")
                 // Specify the list array, the items to be selected by default (null for none),
                 // and the listener through which to receive callbacks when items are selected
-                .setSingleChoiceItems(planList.toArray(new String[planList.size()]), 1,
+                .setSingleChoiceItems(planList.toArray(new String[planList.size()]), 0,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -45,12 +47,16 @@ public class PlanDialog extends SherlockDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK, so save the mSelectedItems results somewhere
+                        ((PlanActivity)getActivity()).orders(null, "334");
                         Intent i = new Intent(getActivity(), LiveChannelGridViewActivity.class);
                         startActivity(i);
                     }
                 });
-
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        Button b = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        if(b != null)
+            b.setBackgroundColor(Color.parseColor("#ffff4444"));
+        return dialog;
     }
 
 }

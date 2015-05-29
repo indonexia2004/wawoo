@@ -1,5 +1,7 @@
 package com.example.pc.myapplication;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -32,7 +34,7 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_channel_grid_view);
-        JSONArray channelData = new JSONArray();
+        channelData = new JSONArray();
         channel(null);
 
         adapter = new LiveChannelGridViewAdapter(this, getImageUrlList(channelData));
@@ -42,9 +44,19 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
+                //String vidAddress = "http://www.pocketjourney.com/downloads/pj/video/famous.3gp";
+                String vidAddress = "";
+                try {
+                    vidAddress = channelData.getJSONObject(position).getString("url");
 
+                } catch(JSONException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(vidAddress), "video/*");
+                startActivity(intent);
                 Toast.makeText(getApplicationContext(),
-                        "Click", Toast.LENGTH_SHORT).show();
+                        vidAddress, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -65,8 +77,7 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
                         {
                             channelData = response;
                             getImageUrlList(channelData);
-                            //PlanDialog m = new PlanDialog(getPlanList(response));
-                            //m.show(getSupportFragmentManager(), "heyhey");                            adapter.setimageUrlList(getImageUrlList(channelData));
+
                             adapter.setimageUrlList(getImageUrlList(channelData));
                             adapter.notifyDataSetChanged();
                             JSONObject resourceId = response.getJSONObject(1);
