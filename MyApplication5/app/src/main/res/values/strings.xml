@@ -30,4 +30,32 @@
     <string name="delete_button">Delete</string>
     <string name="title_activity_plan">PlanActivity</string>
 
+    <string name="title_activity_login">Sign in</string>
+    <string name="app_name">WOWOO</string>
+    <string name="facebook_app_id">1109195535761016</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email ID</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_new_register">New User? Register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_already_user">Already User? Login</string>
+    <string name="action_login">LOGIN</string>
+    <string name="title_choose_plan">Choose A Plan</string>
+    <string name="action_register">REGISTER</string>
+    <string name="action_sign_up">Sign Up</string>
+    <string name="action_forgot_password">Forgot\nPassword?</string>
+    <string name="action_forgot_password_long">FORGOT PASSWORD</string>
+    <string name="action_send">SEND EMAIL</string>
+    <string name="action_next">NEXT</string>
+    <string name="action_or">OR</string>
+    <string name="action_login_facebook">Login With Facebook</string>
+
+    <string name="error_invalid_person">This person name is invalid</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
 </resources>

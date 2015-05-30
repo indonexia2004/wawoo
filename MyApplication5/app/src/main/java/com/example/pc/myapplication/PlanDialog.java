@@ -21,7 +21,7 @@ public class PlanDialog extends SherlockDialogFragment {
         super();
         planList = planData;
     }
-
+/*
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //super.onCreate(savedInstanceState);
@@ -47,7 +47,7 @@ public class PlanDialog extends SherlockDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK, so save the mSelectedItems results somewhere
-                        ((PlanActivity)getActivity()).orders(null, "334");
+                        ((PlanActivity)getActivity()).orders(null, "334",null);
                         Intent i = new Intent(getActivity(), LiveChannelGridViewActivity.class);
                         startActivity(i);
                     }
@@ -58,5 +58,26 @@ public class PlanDialog extends SherlockDialogFragment {
             b.setBackgroundColor(Color.parseColor("#ffff4444"));
         return dialog;
     }
+*/
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        // Set the dialog title
+        builder.setTitle("Please turn on network")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK, so save the mSelectedItems results somewhere
+                        ((PlanActivity)getActivity()).orders(null, "334",null);
+                        Intent i = new Intent(getActivity(), LiveChannelGridViewActivity.class);
+                        startActivity(i);
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        Button b = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        if(b != null)
+            b.setBackgroundColor(Color.parseColor("#ffff4444"));
+        return dialog;
+    }
 }

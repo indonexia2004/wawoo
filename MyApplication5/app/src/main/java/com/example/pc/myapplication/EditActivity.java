@@ -29,7 +29,7 @@ public class EditActivity extends SherlockActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_title);
 
-        Button cancelButton = (Button) findViewById(R.id.buttonCancel);
+        Button cancelButton = (Button) findViewById(R.id.action_next);
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +124,7 @@ public class EditActivity extends SherlockActivity {
         ArrayList<ItemData> arrayList = new ArrayList<ItemData>();
         for (EkData kuv : kuvList) {
             ItemData item = new ItemData(kuv.getMessage(), "");
-            item.setId(kuv.getId());
+            item.setId("");
             arrayList.add(item);
         }
 

@@ -6,6 +6,9 @@
     <color name="activity_background">#FFFFFF</color>
     <color name="blue_activity_background">#375e8a</color>
     <color name="border">#A12AE6</color>
+    <color name="red_light">#ffff4444</color>
+    <color name="orange_dark">#ffff8800</color>
+    <color name="blue_dark">#ff0099cc</color>
 
     <!-- for text -->
     <color name="text_white">#FFFFFF</color>

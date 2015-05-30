@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -13,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -45,7 +47,9 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +67,11 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+    private String urlBase = "https://41.204.245.244:80/tbcplatform/api/v1/";
+    private String selfcare_login = urlBase + "selfcare/login";
+    private String ownedhardware = urlBase + "ownedhardware/";
+    private String android_id ;
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -87,6 +96,9 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_title);
+
+        android_id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -159,6 +171,18 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
     }
 
     @Override
+    public void onBackPressed() {
+        Log.i("MainActivity", "onBackPressed");
+        // super.onBackPressed();
+
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -205,9 +229,14 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
 
         boolean cancel = false;
         View focusView = null;
-
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        }
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        else if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -227,15 +256,21 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            //focusView.requestFocus();
-            Toast.makeText(this, "Please turn on network", Toast.LENGTH_LONG).show();
+            focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            //mAuthTask = new UserLoginTask(email, password);
-            //mAuthTask.execute((Void) null);
-            //login();
+
+            getApplicationContext().getSharedPreferences("WAWOO",Context.MODE_PRIVATE).edit()
+                    .putBoolean("LOGIN", true)
+                    .commit();
+
+            login(null);
+
+            Intent intent = new Intent(getApplicationContext(),
+                    PlanActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -413,6 +448,172 @@ public class LoginActivity extends SherlockActivity implements LoaderCallbacks<C
 
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
+    }
+
+
+    private void login(JSONObject object) {
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                selfcare_login, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("LoginActivity", response.toString());
+                try{
+                    String clientId = response.getString("clientId");
+
+                    JSONObject clientData = response.getJSONObject("clientData");
+                    String balanceAmount = clientData.getString("balanceAmount");
+                    String currency = clientData.getString("currency");
+                    String balanceCheck = clientData.getString("balanceCheck");
+
+                    JSONObject paypalConfigData = response.getJSONObject("paypalConfigData");
+                    String name = clientData.getString("name");
+                    Boolean enabled = clientData.getBoolean("enabled");
+                    String value = clientData.getString("value");
+
+                    JSONObject object = new JSONObject();
+                    object.put("clientId",clientId);
+                    object.put("balanceAmount",balanceAmount);
+                    object.put("currency",currency);
+                    object.put("balanceCheck",balanceCheck);
+                    object.put("name",name);
+                    object.put("enabled", enabled);
+                    object.put("value", value);
+                    Log.d("LoginActivity", object.toString());
+
+                    getApplicationContext().getSharedPreferences("WAWOO", Context.MODE_PRIVATE)
+                                            .edit()
+                                            .putString("CLIENT_ID", clientId)
+                                            .commit();
+
+                    ownedHardware(null,clientId);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("LoginActivity", "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+                showProgress(false);
+            }
+        }){
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", mEmailView.getText().toString());
+                params.put("password", mPasswordView.getText().toString());
+                return params;
+            }
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("X-Tbc-Platform-TenantId", "Default");
+                headers.put("Content-Type", "application/json;charset=utf-8");
+                String creds = String.format("%s:%s","billing","password");
+                String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
+                headers.put("Authorization", auth);
+                return headers;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
+    /**
+     * Method to make json object request where json response starts wtih {
+     * */
+    public JSONObject createOwnedHardwareMapperObject(JSONObject object)
+    {
+        String date = getCurrentDate();
+        System.out.println("Current time => " + date);
+        Log.d("LoginActivity", "createDeviceMapperObject: date: " + date);
+        JSONObject request=new JSONObject();
+        try {
+
+
+            request.put("dateFormat","dd MMMM yyyy");
+            request.put("status","");
+            request.put("itemType","1");
+            request.put("locale","en");
+
+            request.put("allocationDate",date);
+            request.put("serialNumber",android_id);
+            request.put("provisioningSerialNumber", android_id);
+
+            Log.d("LoginActivity", "createDeviceMapperObject: " + request.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return request;
+    }
+
+    private String getCurrentDate(){
+        return new SimpleDateFormat("dd MMMM yyyy").format(Calendar.getInstance().getTime());
+    }
+
+    private void ownedHardware(JSONObject object,String clientId) {
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                ownedhardware + clientId , createOwnedHardwareMapperObject(null),
+                new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("LoginActivity", response.toString());
+                try{
+                    JSONObject resourceId = response.getJSONObject("resourceId");
+                    showProgress(false);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("LoginActivity", "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+                showProgress(false);
+            }
+        }){
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("X-Tbc-Platform-TenantId", "Default");
+                headers.put("Content-Type", "application/json;charset=utf-8");
+                String creds = String.format("%s:%s","billing","password");
+                String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
+                headers.put("Authorization", auth);
+                return headers;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
 }

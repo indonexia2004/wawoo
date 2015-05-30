@@ -17,10 +17,11 @@ public class ItemData {
 
     private String title;
     private boolean isCheck;
-    private int id;
+    private String id;
 
-    public ItemData(String title, String info) {
+    public ItemData(String title, String id) {
         this.setTitle(title);
+        this.setId(id);
     }
 
     public String getTitle() {
@@ -49,7 +50,7 @@ public class ItemData {
     /**
      * @return the id
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -57,7 +58,7 @@ public class ItemData {
      * @param id
      *            the id to set
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

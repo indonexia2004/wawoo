@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@android:color/holo_orange_dark"
+    android:background="@color/orange_dark"
     tools:context="com.example.pc.myapplication.RegisterActivity">
 
     <!-- Login progress -->
@@ -21,14 +21,15 @@
 
         <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical"
-            android:background="@android:color/holo_red_light"
+            android:background="@color/text_white"
             android:padding="@dimen/activity_padding">
 
             <TextView  android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:textSize="30sp"
                 android:text="@string/action_register" android:maxLines="1"
                 android:gravity="center" android:textStyle="bold"
-                android:singleLine="true"
+                android:textColor="@color/orange_dark"
+                android:singleLine="true" android:layout_marginBottom="8dp"
                 android:background="#07000000"/>
 
             <EditText android:id="@+id/prompt_name" android:layout_width="match_parent"
@@ -46,42 +47,43 @@
                 android:imeActionId="@+id/action_sign_up"
                 android:imeActionLabel="@string/action_sign_up"
                 android:imeOptions="actionUnspecified" android:inputType="textPassword"
-                android:maxLines="1" android:singleLine="true" />
+                android:maxLines="1" android:singleLine="true"
+                android:layout_marginBottom="8dp"/>
 
             <LinearLayout android:id="@+id/buttong_field" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:orientation="horizontal"
-                android:background="@android:color/holo_red_light">
+                android:background="@color/orange_dark">
                 <Button android:id="@+id/action_sign_up" style="?android:textAppearanceSmall"
-                    android:layout_width="wrap_content" android:layout_height="match_parent"
+                    android:layout_width="match_parent" android:layout_height="match_parent"
                     android:text="@string/action_sign_up"
-                    android:background="@android:color/holo_orange_dark"
-                    android:textStyle="bold"  android:layout_marginLeft="4dp"
+                    android:textStyle="bold" android:background="@color/orange_dark"
                     android:layout_weight="1"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
     <LinearLayout android:id="@+id/register_field" android:layout_width="match_parent"
         android:layout_height="wrap_content" android:orientation="vertical"
-        android:background="@android:color/holo_orange_dark">
+        android:background="@color/orange_dark">
 
         <Button android:id="@+id/action_already_user" style="?android:textAppearanceSmall"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/action_already_user"
-            android:textStyle="bold" android:background="@android:color/holo_orange_dark"
+            android:textStyle="bold" android:background="@color/orange_dark"
             android:gravity="center"
             android:layout_weight="1"/>
 
         <TextView  android:layout_width="match_parent"
             android:layout_height="wrap_content" android:textSize="30sp"
             android:text="@string/action_or" android:maxLines="1"
-            android:gravity="center"    android:background="@android:color/holo_orange_dark"
-            android:singleLine="true"
+            android:gravity="center"    android:background="@color/orange_dark"
+            android:singleLine="true" android:layout_gravity="center_vertical"
+            android:layout_weight="1" android:layout_marginBottom="8dp"
             android:textStyle="bold"/>
 
         <Button android:id="@+id/action_login_facebook" style="?android:textAppearanceSmall"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/action_login_facebook"
-            android:textStyle="bold" android:background="@android:color/holo_blue_dark"
+            android:textStyle="bold" android:background="@color/blue_dark"
             android:gravity="center"
             android:layout_weight="1"/>
 

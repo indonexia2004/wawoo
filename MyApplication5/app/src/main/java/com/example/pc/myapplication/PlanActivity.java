@@ -1,8 +1,14 @@
 package com.example.pc.myapplication;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -24,23 +30,65 @@ import java.util.Map;
 
 
 public class PlanActivity extends SherlockFragmentActivity {
-    private JSONArray planData;
+    private JSONArray planData = new JSONArray();
+    private static final String TAG = "PlanActivity";
+    EditEkAdapter adapter;
+    ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_plan);
+        setContentView(R.layout.edit_list_view);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setIcon(R.drawable.ic_wawoologo);
-
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(R.layout.actionbar_title);
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(false);
-        //planData = new JSONArray();
-        //PlanDialog m = new PlanDialog(getPlanList(planData));
-       // m.show(getSupportFragmentManager(), "PlanDialog");
+
         plansPrepaid(null);
+
+        // init listview
+        adapter = new EditEkAdapter(this, GetDataForList(this));
+        listView = (ListView) findViewById(R.id.list_view);
+
+        listView.setDivider(getResources().getDrawable(
+                android.R.color.holo_orange_dark));
+        listView.setDividerHeight(getResources().getDimensionPixelSize(
+                R.dimen.divider));
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /** implements OnClickListener **/
+            public void onItemClick(AdapterView<?> a, View view, int position,
+                                    long id) {
+                Log.i("listview", "position: " + position);
+
+                ItemData kuv = (ItemData) listView.getItemAtPosition(position);
+                adapter.setItemChecked(position);
+                adapter.notifyDataSetChanged();
+            }
+
+        });
+
+        Button nextButton = (Button) findViewById(R.id.action_next);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String clientId = getApplicationContext().getSharedPreferences("WAWOO", MODE_PRIVATE)
+                        .getString("CLIENT_ID", "334");
+                ItemData item = adapter.getItemChecked();
+                if (item == null) {
+                    return;
+                }
+                orders(null, clientId, item);
+
+                Intent intent = new Intent(getApplicationContext(),
+                        InstructionActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -60,9 +108,8 @@ public class PlanActivity extends SherlockFragmentActivity {
                         try
                         {
                             planData = response;
-                            PlanDialog m = new PlanDialog(getPlanList(response));
-                            m.show(getSupportFragmentManager(), "heyhey");
-
+                            adapter.setListData(GetDataForList(getApplicationContext()));
+                            adapter.notifyDataSetChanged();
                             JSONObject resourceId = response.getJSONObject(1);
 
                         } catch(JSONException e) {
@@ -101,12 +148,12 @@ public class PlanActivity extends SherlockFragmentActivity {
     /**
      * Method to make json object request where json response starts wtih {
      * */
-    public JSONObject createOrdersMapperObject(JSONObject object)
+    public JSONObject createOrdersMapperObject(JSONObject object, ItemData item)
     {
         JSONObject request=new JSONObject();
         try {
 
-            request.put("planCode","4");
+            request.put("planCode",item.getId());
             request.put("paytermCode","Monthly");
             request.put("dateFormat","dd MMMM yyyy");
             request.put("contractPeriod","1");
@@ -123,16 +170,16 @@ public class PlanActivity extends SherlockFragmentActivity {
         return request;
     }
 
-    public void orders(JSONObject object, String clientId) {
+    public void orders(JSONObject object, String clientId,ItemData item) {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                orders+ clientId, createOrdersMapperObject(null), new Response.Listener<JSONObject>() {
+                orders+ clientId, createOrdersMapperObject(null, item), new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("PlanActivity", response.toString());
                 try{
-                    JSONObject resourceId = response.getJSONObject("resourceId");
+                    String resourceId = response.getString("resourceId");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -145,7 +192,7 @@ public class PlanActivity extends SherlockFragmentActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.d("PlanActivity", "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                        error.getMessage() + "can't choose plan", Toast.LENGTH_SHORT).show();
             }
         }){
 
@@ -168,11 +215,12 @@ public class PlanActivity extends SherlockFragmentActivity {
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
-    private ArrayList getPlanList(JSONArray plandata){
-        ArrayList ret = new ArrayList();
+    private ArrayList<ItemData> getPlanList(JSONArray plandata){
+        ArrayList<ItemData> ret = new ArrayList();
         for(int i=0 ; i< plandata.length(); i++) {
             try{
-                ret.add(plandata.getJSONObject(i).getString("planCode"));
+                ret.add(new ItemData(plandata.getJSONObject(i).getString("planCode"),
+                             plandata.getJSONObject(i).getString("id")));
             } catch(JSONException e) {
                 e.printStackTrace();
             }
@@ -180,5 +228,31 @@ public class PlanActivity extends SherlockFragmentActivity {
 
         Log.d(PlanDialog.class.getName(), ret.toString());
         return ret;
+    }
+
+    /**
+     * Called to get data from database
+     */
+    private ArrayList<ItemData> GetDataForList(Context context) {
+        Log.i(TAG, "Get kuv list in Offer");
+
+        ArrayList<ItemData> kuvList = getPlanList(planData);
+
+        ArrayList<ItemData> arrayList = new ArrayList<ItemData>();
+        for (ItemData kuv : kuvList) {
+            ItemData item = new ItemData(kuv.getTitle(), kuv.getId());
+            if("5".equals(kuv.getId())) {
+                item.setCheck(true);
+            }
+            arrayList.add(item);
+        }
+
+        if(arrayList.size() == 0){
+            ItemData item =  new ItemData("Free Trial","5");
+            item.setCheck(true);
+            arrayList.add(item);
+        }
+
+        return arrayList;
     }
 }

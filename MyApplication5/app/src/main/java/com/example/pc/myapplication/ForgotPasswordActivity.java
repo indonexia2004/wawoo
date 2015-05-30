@@ -16,6 +16,7 @@ import android.provider.ContactsContract;
 
 import android.text.TextUtils;
 
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -94,6 +95,18 @@ public class ForgotPasswordActivity extends SherlockActivity implements LoaderCa
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.i("MainActivity", "onBackPressed");
+        // super.onBackPressed();
+
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+
     }
 
 

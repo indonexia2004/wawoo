@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -34,6 +35,15 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_channel_grid_view);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setIcon(R.drawable.img_home);
+
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.live_channel_actionbar_title);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+
         channelData = new JSONArray();
         channel(null);
 
@@ -61,9 +71,21 @@ public class LiveChannelGridViewActivity extends SherlockActivity {
         });
     }
 
-    private String plans_prepaid = "http://192.168.56.101:3000/db";
-    //private String urlBase = "https://41.204.245.244:80/tbcplatform/api/v1/";
-    //private String plans_prepaid = urlBase + "planservices/334?serviceType=IPTV";
+    @Override
+    public void onBackPressed() {
+        Log.i("MainActivity", "onBackPressed");
+        // super.onBackPressed();
+
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+
+    }
+
+    //private String plans_prepaid = "http://192.168.56.101:3000/db";
+    private String urlBase = "https://41.204.245.244:80/tbcplatform/api/v1/";
+    private String plans_prepaid = urlBase + "planservices/334?serviceType=IPTV";
 
     private void channel(JSONObject object) {
 

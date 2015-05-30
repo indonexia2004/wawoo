@@ -2,6 +2,8 @@ package com.example.pc.myapplication;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -104,6 +106,14 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView = (ImageView) convertView;
 
+        DisplayMetrics displayMetrics= mContext.getResources().getDisplayMetrics();
+        int screen_width= displayMetrics.widthPixels;    //width of the device screen
+        int screen_high = displayMetrics.heightPixels;    //width of the device screen
+
+        int view_width = screen_width/5;   //width for imageview
+        int view_high = screen_high/3;   //width for imageview
+        Log.d("DAI_DEBUG", "view_width = " + view_width);
+        Log.d("DAI_DEBUG", "view_high = " + view_high);
 
         if (imageView == null) {
             imageView = new ImageView(mContext);
@@ -113,7 +123,7 @@ public class LiveChannelGridViewAdapter extends BaseAdapter {
 
         Picasso.with(mContext)
                 .load(url)
-                .resize(250, 250)
+                .resize(view_width, view_high)
                 .transform(new CropSquareTransformation())
                 //.placeholder(R.drawable.icon_loading)   // optional
                 //.error(R.drawable.icon_error)

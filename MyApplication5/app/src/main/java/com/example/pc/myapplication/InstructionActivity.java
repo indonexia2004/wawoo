@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -14,22 +15,28 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 public class InstructionActivity extends SherlockActivity {
 
+    private Handler mHandler = new Handler();
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            Intent intent = new Intent(getApplicationContext(),
+                    LiveChannelGridViewActivity.class);
+            startActivity(intent);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instruction);
 
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.actionbar_title);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.actionbar_title);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
-        /*
-        if(networkAvailable()){
-            Intent i = new Intent(this,LoginActivity.class);
-            startActivity(i);
-        }else {
-            //alertTurnOnNetwork();
-            Toast.makeText(this, "Please turn on network", Toast.LENGTH_LONG).show();
-        }*/
+        mHandler.postDelayed(mUpdateTimeTask, 10000 );
+
     }
 
     private void alertTurnOnNetwork() {
@@ -61,9 +68,6 @@ public class InstructionActivity extends SherlockActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         alertDialog.show();
-
-       //Dialog dialog = new Dialog(this,android.R.style.Theme_Translucent_NoTitleBar);
-        //dialog.show();
     }
 
     private boolean networkAvailable() {
