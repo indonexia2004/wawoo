@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">alora</string>
+
+    <string name="action_next">Tìm Kiếm</string>
+    <string name="title_choose">Vui Lòng Chọn</string>
+    <string name="title_activity_map">MapActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+
+</resources>
